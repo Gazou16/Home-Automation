@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Product App</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+/* Header */
+header {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 2%;  /* Using percentage padding */
+    text-align: center;
+    /*position: sticky;*/
+    top: 0;
+    z-index: 1000;
+    justify-content: right;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2vw;  /* Responsive text size based on viewport width */
+    justify-content: right;
+}
+
+        /* Sidebar */
+        .sidebar {
+            width: 20%;  /* Sidebar width as a percentage of the screen */
+            background-color: #f4f4f4;
+            padding: 2%;  /* Sidebar padding in percentage */
+            position: fixed;
+            height: 100vh;  /* Full height */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1500;
+        }
+
+
+.sidebar button {
+    width: 100%;
+    padding: 3%;  /* Button padding as percentage */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1.5vw;  /* Button text size in responsive units */
+    transition: background-color 0.3s ease;
+}
+
+.sidebar button:hover {
+    background-color: #0056b3;
+}
+
+.sidebar button a {
+    text-decoration: none;
+    color: white;
+}
+
+        .user-info {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        /* Main container to hold jamifier and graph-show */
+        main {
+            display: flex;
+            margin-left: 22%;  /* Leave space for the sidebar */
+            padding: 2%;
+        }
+
+        /* Graph-Show Section */
+        #graph-show {
+            display: flex;
+            flex-direction: column;
+            width: 78%;  /* Fill remaining space */
+        }
+
+        #temperature-chart-section,
+        #humidity-chart-section {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+
+    <!-- Add Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Smart Home System</h1>
+    </header>
+
+    <aside class="sidebar">
+        <nav>
+            <div class="user-info">
+                <p>Hello, Guest! Please <a href="/login">login</a>.</p>
+                <button><a href="/logout">Logout</a></button>
+            </div>
+
+            <form action="/notifications" method="get">
+                <button><a href="/">Notifications</a></button>
+            </form>
+
+            <form action="/" method="get">
+                <button><a href="/">Home</a></button>
+            </form>
+            <form action="/graphs" method="get">
+                <button><a href="/graphs">Graphs</a></button>
+            </form>
+            <form action="/setting" method="get">
+                <button><a href="/setting">Settings</a></button>
+            </form>
+        </nav>
+    </aside>
+
+    <main>
+<h1>Historical Temperature & Humidity Data</h1>
+    <canvas id="tempChart" width="400" height="200"></canvas>
+    <canvas id="humChart" width="400" height="200"></canvas>
+
+    <script>
+        var tempCtx = document.getElementById('tempChart').getContext('2d');
+        var humCtx = document.getElementById('humChart').getContext('2d');
+
+        var tempChart = new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var humChart = new Chart(humCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Humidity (%)',
+                    data: [],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Fetch historical data from the backend
+    function updateCharts(){
+        fetch('/live-data')
+            .then(response => response.json())
+            .then(data => {
+                tempChart.data.labels.push(new Date().toLocaleTimeString());
+                tempChart.data.datasets[0].data = data.temperature;
+                humChart.data.labels.push(new Date().toLocaleTimeString());
+                humChart.data.datasets[0].data = data.humidity;
+
+                tempChart.update();
+                humChart.update();
+            });
+    }
+
+    setInterval(updateCharts, 5000);
+    </script>
+</body>
+</html>

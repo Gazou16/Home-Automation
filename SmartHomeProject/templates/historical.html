@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Historical Temperature & Humidity Data</h1>
+    <canvas id="tempChart" width="400" height="200"></canvas>
+    <canvas id="humChart" width="400" height="200"></canvas>
+
+    <script>
+        var tempCtx = document.getElementById('tempChart').getContext('2d');
+        var humCtx = document.getElementById('humChart').getContext('2d');
+
+        var tempChart = new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var humChart = new Chart(humCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Humidity (%)',
+                    data: [],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Fetch historical data from the backend
+    function updateCharts(){
+        fetch('/live-data')
+            .then(response => response.json())
+            .then(data => {
+                tempChart.data.labels.push(new Date().toLocaleTimeString());
+                tempChart.data.datasets[0].data = data.temperature;
+                humChart.data.labels.push(new Date().toLocaleTimeString());
+                humChart.data.datasets[0].data = data.humidity;
+
+                tempChart.update();
+                humChart.update();
+            });
+    }
+
+    setInterval(updateCharts, 5000);
+    </script>
+</body>
+</html>

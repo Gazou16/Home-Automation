@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Product App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Smart Home System</h1>
+    </header>
+<div id="big">
+    <div id="test">
+    <aside class="sidebar">
+        <nav>
+            <div class="user-info">
+            {% if username %}
+                <p>Hello, {{ username }}! You are logged in.</p>
+            {% else %}
+                <p>Welcome, Guest! Please <a href="/login">login</a>.</p>
+            {% endif %}
+
+        <button><a href="/logout">Logout</a></button>
+        </div>
+
+            <form action="/notifications" method="get">
+                <button><a href="/">Notifications</a></button>
+            </form>
+
+            <form action="/" method="get">
+                <button><a href="/">Home</a></button>
+            </form>
+            <form action="/graphs" method="get">
+                <button><a href="/graphs">Graphs</a></button>
+            </form>
+            <form action="/setting" method="get">
+                <button><a href="/setting">Settings</a></button>
+            </form>
+        </nav>
+    </aside>
+
+    <main>
+        <!-- Main content goes here -->
+        </div>
+    <div id="notifications-list">
+        <div class="notification" id="notification-1" data-id="1" onclick="openNotification(this)">
+            <h4>Sound Detected</h4>
+            <p>Click to view details...</p>
+        </div>
+        <div class="notification" id="notification-2" data-id="2" onclick="openNotification(this)">
+            <h4>Motion Detected</h4>
+            <p>Click to view details...</p>
+        </div>
+        <div class="notification" id="notification-3" data-id="3" onclick="openNotification(this)">
+            <h4>Temperature is above 25*</h4>
+            <p>Click to view details...</p>
+        </div>
+    </div>
+    </div>
+    <!-- Fullscreen Modal for Detailed Notification -->
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Notification Title</h2>
+            <p id="modalDetails">Notification details go here...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='javascript/notifications.js') }}"></script>
+    </main>
+
+    <footer>
+        <p>© 2024 My Product App. All rights reserved.</p>
+    </footer>
+</body>
+</html>

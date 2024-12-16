@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Product App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+    button{
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Smart Home System</h1>
+    </header>
+
+    <aside class="sidebar">
+        <nav>
+            <div class="user-info">
+            {% if username %}
+                <p>Hello, {{ username }}! You are logged in.</p>
+            {% else %}
+                <p>Welcome, Guest! Please <a href="/login">login</a>.</p>
+            {% endif %}
+
+            <button><a href="/logout">Logout</a></button>
+            </div>
+
+            <form action="/notifications" method="get">
+                <button><a href="/">Notifications</a></button>
+            </form>
+
+            <form action="/" method="get">
+                <button><a href="/">Home</a></button>
+            </form>
+            <form action="/graphs" method="get">
+                <button><a href="/graphs">Graphs</a></button>
+            </form>
+            <form action="/setting" method="get">
+                <button><a href="/setting">Settings</a></button>
+            </form>
+        </nav>
+    </aside>
+
+    <main>
+        <div>
+            <button>The light: {{ Light }}</button>
+        </div>
+        <div id="system-armed">
+            <h2>Motion: {{ motion}}</h2>
+            <h2>Sound: {{ sound }}</h2>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 My Product App. All rights reserved.</p>
+    </footer>
+</body>
+</html>
